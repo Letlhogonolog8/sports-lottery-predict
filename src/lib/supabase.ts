@@ -180,8 +180,8 @@ export async function getLiveMatches() {
       .from('matches')
       .select(`
         *,
-        home_team:teams!matches_home_team_id_fkey (logo_url, name),
-        away_team:teams!matches_away_team_id_fkey (logo_url, name)
+        home_team:teams!home_team_id (logo_url, name),
+        away_team:teams!away_team_id (logo_url, name)
       `)
       .eq('status', 'live')
       .order('start_time', { ascending: false });
@@ -197,8 +197,8 @@ export async function getUpcomingMatches(limit = 20) {
       .from('matches')
       .select(`
         *,
-        home_team:teams!matches_home_team_id_fkey (logo_url, name),
-        away_team:teams!matches_away_team_id_fkey (logo_url, name)
+        home_team:teams!home_team_id (logo_url, name),
+        away_team:teams!away_team_id (logo_url, name)
       `)
       .eq('status', 'upcoming')
       .gt('start_time', new Date().toISOString())
