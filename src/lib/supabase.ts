@@ -519,18 +519,30 @@ export async function getLotteryDrawWithDetails(drawId: string) {
 export async function getAllLotteryDrawsWithDetails() {
   const { data: draws, error } = await supabase
     .from('lottery_draws')
-    .select(`
-      *,
-      lottery_frequency (*),
-      lottery_numbers (*)
-    `)
+    .select('*')
     .order('next_draw', { ascending: true });
 
   if (error) throw error;
+  if (!draws || draws.length === 0) return [];
 
-  return (draws || []).map(draw => {
-    const freq: Array<{ number: number; frequency: number }> = draw.lottery_frequency || [];
-    const nums: Array<{ number: number; classification: string }> = draw.lottery_numbers || [];
+  const drawIds = draws.map(d => d.id);
+
+  const [freqResult, numsResult] = await Promise.allSettled([
+    supabase.from('lottery_frequency').select('*').in('draw_id', drawIds),
+    supabase.from('lottery_numbers').select('*').in('draw_id', drawIds),
+  ]);
+
+  const allFreq: Array<{ draw_id: string; number: number; frequency: number }> =
+    freqResult.status === 'fulfilled' ? (freqResult.value.data ?? []) : [];
+  const allNums: Array<{ draw_id: string; number: number; classification: string }> =
+    numsResult.status === 'fulfilled' ? (numsResult.value.data ?? []) : [];
+
+  if (freqResult.status === 'rejected') console.error('[lottery] frequency fetch error:', freqResult.reason);
+  if (numsResult.status === 'rejected') console.error('[lottery] numbers fetch error:', numsResult.reason);
+
+  return draws.map(draw => {
+    const freq = allFreq.filter(f => f.draw_id === draw.id);
+    const nums = allNums.filter(n => n.draw_id === draw.id);
     return {
       id: draw.id,
       name: draw.name,

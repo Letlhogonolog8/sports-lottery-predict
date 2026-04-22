@@ -133,34 +133,48 @@ const AppLayout: React.FC = () => {
     };
 
     const fetchData = async () => {
-      try {
-        const [live, upcoming, lottery] = await Promise.all([
-          getLiveMatches(),
-          getUpcomingMatches(),
-          getAllLotteryDrawsWithDetails(),
-        ]);
+      const [liveResult, upcomingResult, lotteryResult] = await Promise.allSettled([
+        getLiveMatches(),
+        getUpcomingMatches(),
+        getAllLotteryDrawsWithDetails(),
+      ]);
 
-        const allMatchIds = [...(live || []), ...(upcoming || [])]
-          .map((match) => match.id)
-          .filter(Boolean);
+      if (!isMounted) return;
 
-        const predictionsByMatchId = await getLatestMatchPredictions(allMatchIds);
+      const live = liveResult.status === 'fulfilled' ? (liveResult.value ?? []) : [];
+      const upcoming = upcomingResult.status === 'fulfilled' ? (upcomingResult.value ?? []) : [];
+      const lottery = lotteryResult.status === 'fulfilled' ? (lotteryResult.value ?? []) : [];
 
-        if (!isMounted) return;
-
-        const transformedLive = transformMatches(live, predictionsByMatchId);
-        const transformedUpcoming = transformMatches(upcoming, predictionsByMatchId);
-
-        setLiveMatches(transformedLive);
-        setUpcomingMatches(transformedUpcoming);
-        setLotteryDrawsData(lottery || []);
-        setDataError(null);
-        setLastUpdate(new Date());
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        if (!isMounted) return;
-        setDataError('Live updates temporarily delayed. Retrying...');
+      if (liveResult.status === 'rejected') {
+        console.error('[AppLayout] getLiveMatches error:', liveResult.reason);
       }
+      if (upcomingResult.status === 'rejected') {
+        console.error('[AppLayout] getUpcomingMatches error:', upcomingResult.reason);
+      }
+      if (lotteryResult.status === 'rejected') {
+        console.error('[AppLayout] getAllLotteryDrawsWithDetails error:', lotteryResult.reason);
+      }
+
+      const allMatchIds = [...live, ...upcoming].map((m) => m.id).filter(Boolean);
+      let predictionsByMatchId: Record<string, any> = {};
+      try {
+        predictionsByMatchId = await getLatestMatchPredictions(allMatchIds);
+      } catch (err) {
+        console.error('[AppLayout] getLatestMatchPredictions error:', err);
+      }
+
+      if (!isMounted) return;
+
+      const transformedLive = transformMatches(live, predictionsByMatchId);
+      const transformedUpcoming = transformMatches(upcoming, predictionsByMatchId);
+
+      setLiveMatches(transformedLive);
+      setUpcomingMatches(transformedUpcoming);
+      setLotteryDrawsData(lottery);
+
+      const anyFailed = liveResult.status === 'rejected' || upcomingResult.status === 'rejected';
+      setDataError(anyFailed ? 'Some data feeds delayed. Retrying...' : null);
+      setLastUpdate(new Date());
     };
 
     const scheduleRefresh = () => {
