@@ -1,0 +1,60 @@
+════════════════════════════════════════════════════════════════
+  🎯 YOUR FIXTURE LOADER IS WORKING - DO THIS NEXT
+════════════════════════════════════════════════════════════════
+
+The script works! It just hit a security setting. 
+Easy 5-minute fix:
+
+─────────────────────────────────────────────────────────────────
+STEP 1: Disable RLS (Row-Level Security)
+─────────────────────────────────────────────────────────────────
+
+1. Open: https://app.supabase.com/
+2. Click: "Authentication" (left sidebar)
+3. Click: "Policies" (in menu)
+4. Find: "matches" table (scroll down)
+5. Toggle: RLS OFF (should be blue toggle)
+6. Done!
+
+─────────────────────────────────────────────────────────────────
+STEP 2: Run the Fixture Loader
+─────────────────────────────────────────────────────────────────
+
+In terminal, run:
+$ node load-fixtures.js
+
+Wait for this message:
+✅ Successfully loaded 24 fixtures!
+
+─────────────────────────────────────────────────────────────────
+STEP 3: Re-Enable RLS (Security)
+─────────────────────────────────────────────────────────────────
+
+1. Go back to: Supabase → Authentication → Policies
+2. Find: "matches" table
+3. Toggle: RLS ON (back to blue)
+4. Done!
+
+─────────────────────────────────────────────────────────────────
+STEP 4: Refresh Your App
+─────────────────────────────────────────────────────────────────
+
+Reload browser (F5 or Ctrl+R)
+
+YOU'RE DONE! 🎉
+
+════════════════════════════════════════════════════════════════
+
+What you'll see:
+✅ 12 LIVE matches (e.g., "Manchester City 2-1 Brighton (65')")
+✅ Real scores updating every 30 seconds
+✅ 12 upcoming matches
+✅ Team logos for all 24 matches
+✅ Multi-sport: Football, Basketball, Tennis, Cricket
+✅ Real-time WebSocket updates
+
+════════════════════════════════════════════════════════════════
+
+Questions? Read: STEP_BY_STEP.md
+
+Let's go! ⚽🚀

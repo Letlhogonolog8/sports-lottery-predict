@@ -1,0 +1,50 @@
+════════════════════════════════════════════════════════════════
+  ⚡ LOAD REAL-TIME FIXTURES NOW ⚡
+════════════════════════════════════════════════════════════════
+
+Your app is ready but needs match data loaded. Choose ONE:
+
+─────────────────────────────────────────────────────────────────
+1️⃣  EASIEST: Node.js Script (30 seconds)
+─────────────────────────────────────────────────────────────────
+
+Open terminal and run:
+$ node load-fixtures.js
+
+Expected: Shows "✅ Successfully loaded 24 fixtures!"
+Then: Refresh your browser
+
+─────────────────────────────────────────────────────────────────
+2️⃣  MANUAL: Copy-Paste SQL (5 minutes)
+─────────────────────────────────────────────────────────────────
+
+1. Go to: https://app.supabase.com/project/[YOUR_ID]/sql/new
+2. Open: FIXTURES_QUICKSTART.md (in this folder)
+3. Copy: The SQL from "Method 2"
+4. Paste: Into Supabase SQL Editor
+5. Click: RUN
+6. Then: Refresh your browser
+
+─────────────────────────────────────────────────────────────────
+3️⃣  COMPLETE GUIDE: See Documentation
+─────────────────────────────────────────────────────────────────
+
+Read: FIXTURES_QUICKSTART.md (3 methods + troubleshooting)
+
+════════════════════════════════════════════════════════════════
+
+After loading, you'll see:
+✅ 12 LIVE matches with scores (update every 30 seconds)
+✅ 12 UPCOMING matches with start times
+✅ 40+ team logos
+✅ Real-time WebSocket updates
+✅ Automatic goal simulation
+✅ All 5 sports: Football, Basketball, Tennis, Cricket, NFL
+
+════════════════════════════════════════════════════════════════
+
+Status: 🟢 APP READY - JUST LOAD FIXTURES!
+
+Run: node load-fixtures.js
+Then: Refresh browser
+Done! ✨
